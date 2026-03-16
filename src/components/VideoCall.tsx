@@ -247,13 +247,15 @@ function DrmVideo({
 
     const drmConfig: CastLabDrmConfig = {
       merchant: "2a4fa76e0ee14fa78cc808ef8f16ef38",
-      environment: castlab.rtcDrmEnvironments.Development,
+      environment: castlab.rtcDrmEnvironments.Production,
       videoElement: videoEl,
       sessionId: `crtjson:${JSON.stringify(crt)}`,
       video: {
         codec: "H264",
-        encryption: "cbcs",
+        encryption: "cenc",
       },
+      type: "live",
+      mediaBufferMs: 500,
       logLevel: 4,
     };
 
@@ -268,8 +270,11 @@ function DrmVideo({
     try {
       castlab.rtcDrmConfigure(drmConfig);
       castlab.rtcDrmOnTrack(trackEvent, drmConfig);
+      castlab.rtcDrmSetBufferSize(drmConfig, 500);
       setDrmActive(true);
       console.log(`[DRM] DRM configured and track routed for ${trackEvent.track.id}`);
+      // Ensure video element starts playing
+      videoEl.play().catch(() => {});
     } catch (err) {
       console.error("Failed to set up CastLab DRM:", err);
       setDrmError(String(err));
