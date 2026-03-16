@@ -254,7 +254,6 @@ function DrmVideo({
         codec: "H264",
         encryption: "cenc",
       },
-      type: "live",
       mediaBufferMs: 500,
       logLevel: 4,
     };
